@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dialettami</title>
+  <meta name="description" content="Traduci frasi tra Italiano e i dialetti italiani con l'aiuto dell'AI." />
+
+  <style>
+    :root{
+      --bg:#f7f9fb;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --primary:#2e7d32; /* verde soft */
+      --accent:#d32f2f;  /* rosso soft */
+      --accent-2:#1e88e5; /* azzurrino per focus */
+      --italy: linear-gradient(90deg, #2e7d32 0 33%, #ffffff 33% 66%, #d32f2f 66%);
+      --radius:16px;
+      --shadow: 0 8px 24px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";}
+    a{color:inherit}
+    .wrap{max-width:900px;margin:0 auto;padding:20px}
+    header{
+      display:flex;align-items:center;justify-content:center;gap:12px;margin:12px 0 20px 0;
+    }
+    .flag{
+      width:28px;height:18px;border-radius:3px;background:var(--italy);box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);
+    }
+    h1{font-size:clamp(26px,4vw,36px);margin:0;font-weight:800;letter-spacing:.2px}
+    .card{
+      background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;
+    }
+    .row{display:flex;flex-wrap:wrap;gap:12px}
+    .col{flex:1 1 260px}
+    label{display:block;font-weight:600;margin:6px 0 8px;color:#0f172a}
+    .muted{color:var(--muted);font-size:.95rem}
+    textarea, select, input[type="text"]{
+      width:100%;padding:14px 14px;border-radius:12px;border:1px solid #e5e7eb;background:#fff;color:var(--text);
+      outline: none;
+    }
+    textarea{min-height:120px;resize:vertical;line-height:1.4}
+    select:focus, textarea:focus{border-color:var(--accent-2);box-shadow:0 0 0 3px rgba(30,136,229,.15)}
+    .mode-switch{
+      display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px
+    }
+    .pill{
+      border:1px solid #e5e7eb;border-radius:999px;padding:8px 12px;cursor:pointer;background:#fff;
+    }
+    .pill input{display:none}
+    .pill.active{border-color:var(--primary);box-shadow:0 2px 0 0 var(--primary) inset}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      font-weight:800;letter-spacing:.3px;
+      width:100%;padding:14px 18px;border-radius:14px;border:none;cursor:pointer;
+      background:linear-gradient(135deg,var(--primary), #43a047);color:#fff;
+      transition: transform .06s ease, filter .2s ease;
+    }
+    .btn:hover{filter:brightness(1.05)}
+    .btn:active{transform:translateY(1px)}
+    .btn .emoji{font-size:1.2rem}
+    .outputs{display:grid;grid-template-columns:1fr;gap:12px;margin-top:14px}
+    .out{
+      background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px;position:relative;
+    }
+    .out h3{margin:0 0 8px 0;font-size:1rem}
+    .copy{
+      position:absolute;top:10px;right:10px;border:1px solid #e5e7eb;background:#fff;border-radius:8px;padding:6px 10px;cursor:pointer;
+    }
+    .footer{margin:24px 0 32px;text-align:center;color:var(--muted);font-size:.9rem}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:12px;background:#fff;border:1px solid #e5e7eb;
+    }
+    .dialect-select{width:100%}
+    .hidden{display:none!important}
+    @media (min-width:720px){
+      .outputs{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="flag" aria-hidden="true"></div>
+      <h1>Dialettami</h1>
+      <div class="flag" aria-hidden="true"></div>
+    </header>
+
+    <div class="card">
+      <div class="mode-switch" role="tablist" aria-label="Modalità di traduzione">
+        <label class="pill active" id="mode-it-to-dialetto">
+          <input type="radio" name="mode" value="it_to_dia" checked />
+          🇮🇹→🗣️ Da Italiano a Dialetto
+        </label>
+        <label class="pill" id="mode-dialetto-to-it">
+          <input type="radio" name="mode" value="dia_to_it" />
+          🗣️→🇮🇹 Da Dialetto a Italiano
+        </label>
+      </div>
+
+      <div id="form-it-to-dia" class="form">
+        <label for="text-it" class="muted">Scrivi qui sotto quello che vuoi tradurre in uno qualsiasi dei dialetti italiani.</label>
+        <textarea id="text-it" placeholder="Es. Oggi è una bella giornata"></textarea>
+
+        <div class="row" style="margin-top:12px">
+          <div class="col">
+            <label for="dialect">Scegli il dialetto</label>
+            <select id="dialect" class="dialect-select">
+              <optgroup label="Nord Italia">
+                <option>Milanese</option>
+                <option>Piemontese</option>
+                <option>Bolognese</option>
+                <option>Romagnolo</option>
+                <option>Veneto</option>
+                <option>Liguriano</option>
+                <option>Friulano</option>
+                <option>Ladino</option>
+              </optgroup>
+              <optgroup label="Centro Italia">
+                <option>Toscano</option>
+                <option>Fiorentino</option>
+                <option>Romanesco</option>
+                <option>Dialetti umbri</option>
+                <option>Dialetti marchigiani</option>
+                <option>Dialetti laziali (non romaneschi)</option>
+              </optgroup>
+              <optgroup label="Sud Italia">
+                <option>Napoletano</option>
+                <option>Calabrese di Cosenza</option>
+                <option>Calabrese di Catanzaro</option>
+                <option>Salentino</option>
+                <option>Pugliese (Apulo)</option>
+              </optgroup>
+              <optgroup label="Isole">
+                <option>Siciliano</option>
+                <option>Sardo</option>
+                <option>Logudorese</option>
+                <option>Campidanese</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div id="form-dia-to-it" class="form hidden">
+        <label for="text-dia" class="muted">Scrivi qui sotto quello che vuoi tradurre da un qualsiasi dialetto all’italiano.</label>
+        <textarea id="text-dia" placeholder="Es. Che bèla zurnè"></textarea>
+      </div>
+
+      <div style="margin-top:16px">
+        <button id="btn" class="btn">
+          <span class="emoji">🗺️</span> DIALETTAMI <span class="emoji">🇮🇹</span>
+        </button>
+      </div>
+
+      <div class="outputs">
+        <div class="out">
+          <h3>Traduzione</h3>
+          <button class="copy" data-target="translation">Copia</button>
+          <div id="translation" class="muted">La traduzione apparirà qui sotto.</div>
+        </div>
+
+        <div class="out">
+          <h3>Spiegazione</h3>
+          <button class="copy" data-target="explanation">Copia</button>
+          <div id="explanation" class="muted">Una breve spiegazione dei singoli termini tradotti apparirà qui.</div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <span class="badge" title="Suggerimento: funziona anche su mobile">
+          📱 Mobile‑friendly • 🇮🇹 Gradient
+        </span>
+        <div style="margin-top:8px">
+          <small class="muted">
+            Nota: per motivi di sicurezza non inserire la tua API key nel codice client. Usa una funzione server (es. Netlify) come proxy.
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
