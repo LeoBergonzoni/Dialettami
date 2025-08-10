@@ -81,6 +81,21 @@
     @media (min-width:720px){
       .outputs{grid-template-columns:1fr 1fr}
     }
+
+    .dictate-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  .dictate-btn:hover {
+    background: rgba(0,0,0,0.05);
+  }
+
   </style>
 </head>
 <body>
@@ -103,7 +118,8 @@
       </div>
 
       <div id="form-it-to-dia" class="form">
-        <label for="text-it" class="muted">Scrivi qui sotto quello che vuoi tradurre in uno qualsiasi dei dialetti italiani.</label>
+        <label for="text-it" class="muted">Scrivi o registra qui sotto quello che vuoi tradurre in uno qualsiasi dei dialetti italiani.</label>
+        <button id="dictate" class="dictate-btn" title="Dettatura vocale">🎙️</button>
         <textarea id="text-it" placeholder="Es. Oggi è una bella giornata"></textarea>
 
         <div class="row" style="margin-top:12px">
@@ -147,7 +163,8 @@
       </div>
 
       <div id="form-dia-to-it" class="form hidden">
-        <label for="text-dia" class="muted">Scrivi qui sotto quello che vuoi tradurre da un qualsiasi dialetto all’italiano.</label>
+        <label for="text-dia" class="muted">Scrivi o registra qui sotto quello che vuoi tradurre da un qualsiasi dialetto all’italiano.</label>
+        <button id="dictate" class="dictate-btn" title="Dettatura vocale">🎙️</button>
         <textarea id="text-dia" placeholder="Es. Che bèla zurnè"></textarea>
       </div>
 
@@ -156,8 +173,6 @@
           <span class="emoji">🗺️</span> DIALETTAMI <span class="emoji">🇮🇹</span>
         </button>
       </div>
-
-      <button id="dictate" class="btn" type="button">🎙️ Dettatura</button>
 
       <div class="outputs">
         <div class="out">
